@@ -3,9 +3,28 @@ FROM 1186258278/openclaw-zh:2026.3.2-nightly.202603040725
 # 设置环境变量
 ENV ZAI_API_KEY=${ZAI_API_KEY}
 ENV OPENCLAW_GATEWAY_TOKEN=abc
+ENV PORT=18789
 
 # 暴露端口
 EXPOSE 18789
 
-# 配置并启动 OpenClaw Gateway
-CMD ["sh", "-c", "openclaw config set gateway.mode local && openclaw config set agents.defaults.model zai/glm-4.7 && openclaw config set gateway.auth.token abc && openclaw config set gateway.controlUi.dangerouslyAllowHostHeaderOriginFallback true && openclaw gateway --bind lan"]
+# 创建启动脚本
+RUN echo '#!/bin/sh' > /start.sh && \
+    echo 'echo "=== 启动 OpenClaw Gateway ==="' >> /start.sh && \
+    echo 'openclaw config set gateway.mode local' >> /start.sh && \
+    echo 'openclaw config set agents.defaults.model zai/glm-4.7' >> /start.sh && \
+    echo 'openclaw config set gateway.auth.token abc' >> /start.sh && \
+    echo 'openclaw config set gateway.controlUi.dangerouslyAllowHostHeaderOriginFallback true' >> /start.sh && \
+    echo 'echo "=== Gateway 配置完成 ==="' >> /start.sh && \
+    echo 'echo "=== 启动 Gateway ==="' >> /start.sh && \
+    echo 'openclaw gateway --bind lan 2>&1 | tee /tmp/gateway.log &' >> /start.sh && \
+    echo 'GATEWAY_PID=$!' >> /start.sh && \
+    echo 'echo "Gateway PID: $GATEWAY_PID"' >> /start.sh && \
+    echo 'sleep 5' >> /start.sh && \
+    echo 'echo "=== 检查 Gateway 状态 ==="' >> /start.sh && \
+    echo 'tail -20 /tmp/gateway.log' >> /start.sh && \
+    echo 'wait $GATEWAY_PID' >> /start.sh && \
+    chmod +x /start.sh
+
+# 启动脚本
+CMD ["/start.sh"]

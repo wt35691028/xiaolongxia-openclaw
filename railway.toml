@@ -3,7 +3,8 @@ builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile.openclaw"
 
 [deploy]
-healthcheckPath = "/health"
+# 禁用健康检查，使用容器运行状态
+healthcheckPath = "/"
 healthcheckProtocol = "HTTP"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
