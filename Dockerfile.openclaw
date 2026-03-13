@@ -1,0 +1,8 @@
+FROM 1186258278/openclaw-zh:2026.3.2-nightly.202603040725
+
+ENV ZAI_API_KEY=${ZAI_API_KEY}
+ENV OPENCLAW_GATEWAY_TOKEN=abc
+
+EXPOSE 18789
+
+CMD ["sh", "-c", "openclaw config set gateway.mode local && openclaw config set agents.defaults.model zai/glm-4.7 && openclaw config set gateway.auth.token abc && openclaw gateway --bind 0.0.0.0"]
