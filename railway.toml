@@ -1,0 +1,9 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile.openclaw"
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckProtocol = "HTTP"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
